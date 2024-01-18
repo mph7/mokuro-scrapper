@@ -49,6 +49,7 @@ button {
     border: none;
     align-self: center;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 textarea {
