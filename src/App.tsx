@@ -1,31 +1,43 @@
 import "./App.css";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+
+interface Block {
+    lines: string[];
+  }
+  
+  interface Page {
+    blocks: Block[];
+  }
+  
+  interface FileData {
+    pages: Page[];
+  }
 
 function App() {
-    const [fileName, setFileName] = useState("No file selected.");
-    const [fileData, setFileData] = useState(null);
-    const [output, setOutput] = useState("");
+    const [fileName, setFileName] = useState<string>("No file selected.");
+    const [fileData, setFileData] = useState<FileData | null>(null);
+    const [output, setOutput] = useState<string>("");
 
-    function handleFileChange(e) {
+    function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
         setFileName(e.target.files ? e.target.files[0].name : "No file selected.");
 
         const reader = new FileReader();
         reader.onload = onReaderLoad;
-        reader.readAsText(e.target.files[0]);
-        function onReaderLoad(event) {
-            const obj = JSON.parse(event.target.result);
+        reader.readAsText(e.target.files![0]);
+        function onReaderLoad(event: ProgressEvent<FileReader>) {
+            const obj = JSON.parse(event.target!.result as string);
             setFileData(obj);
         }
     }
 
-    const allLines = [];
+    const allLines: string[] = [];
     function handleDataScrapping() {
-        const pages = fileData.pages;
+        const pages = fileData?.pages;
 
-        for (let value of pages) {
+        for (const value of pages!) {
             const element = value.blocks;
 
-            for (let j of element) {
+            for (const j of element) {
                 const line = j.lines[0];
                 allLines.push(line);
             }
